@@ -1,8 +1,17 @@
 import React from 'react';
+import Grid from './components/grid.jsx';
+import styled from 'styled-components';
+
+const AppDiv = styled.div`
+  text-align: center;
+`
 
 const App = () => {
   return (
-    <h1>pipeDream.js</h1>
+    <AppDiv>
+      <h1>pipeDream.js</h1>
+      <Grid />
+    </AppDiv>
   );
 };
 export default App;
