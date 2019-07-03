@@ -7,16 +7,24 @@
     "start": "nodemon server/server.js",
     "build": "NODE_ENV=production webpack",
     "dev": "NODE_ENV=development webpack-dev-server --open & nodemon server/server.js",
-    "test": "npm test"
+    "test": "npm test",
+    "postinstall": "vendor-copy"
   },
   "author": "Daniel Nagano-Gerace",
   "license": "UNLICENSED",
   "dependencies": {
+    "@vaadin/vaadin-button": "^2.2.0",
+    "@vaadin/vaadin-grid": "^5.4.6",
+    "@vaadin/vaadin-text-field": "^2.4.7",
+    "@webcomponents/webcomponentsjs": "^2.2.10",
     "express": "^4.17.1",
+    "google-trends-api": "^4.9.0",
     "nodemon": "^1.19.1",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
+    "react-draggable": "^3.3.0",
     "styled-components": "^4.3.2",
+    "vendor-copy": "^2.0.0",
     "webpack": "^4.35.2"
   },
   "devDependencies": {
@@ -26,5 +34,15 @@
     "babel-loader": "^8.0.6",
     "webpack-cli": "^3.3.5",
     "webpack-dev-server": "^3.7.2"
-  }
+  },
+  "vendorCopy": [
+    {
+      "from": "node_modules/@webcomponents/webcomponentsjs/custom-elements-es5-adapter.js",
+      "to": "public/vendor/custom-elements-es5-adapter.js"
+    },
+    {
+      "from": "node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js",
+      "to": "public/vendor/webcomponents-bundle.js"
+    }
+  ]
 }

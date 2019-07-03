@@ -9,13 +9,12 @@ const GridSection = styled.section`
 
 const Grid = () => {
   const displays = [];
-  for (let i = 0; i < 6; i += 1) {
+  for (let i = 0; i < 9; i += 1) {
     displays.push(<Display key={i + 'Display'}/>)
   }
   console.log(displays);
   return (
     <GridSection>
-      {/* <Display /> */}
       {displays}
     </GridSection>
   )
