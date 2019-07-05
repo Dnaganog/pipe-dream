@@ -2,37 +2,54 @@ import React, {useState, useEffect} from 'react';
 import Entry from './entry.jsx';
 import styled from 'styled-components';
 import { FixedSizeList as List } from 'react-window';
-import Rx, {interval, of, from} from 'rxjs';
+import {Observable, interval, of, from} from 'rxjs';
 import {throttleTime, map, pluck, debounceTime} from 'rxjs/operators'
 import {useObservable, useEventCallback} from 'rxjs-hooks';
-// import request from 'request';
 
 const DisplayDiv = styled.article`
   padding: 0.25rem 0.5rem;
-  margins: 10px 10px 10px 10px;
-  background: #EBECCA;
+  margins: 5px 5px 5px 5px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: ${(props) => {
+    switch(props.shadow) {
+      case 'left':
+        return '-15px 15px #615550';
+      case 'middle':
+        return '0px 20px #615550';
+      case 'right':
+          return '15px 15px #615550';
+      default:
+        return '0px 10px #615550';
+    }
+  }};
+  background-color: ${(props) => props.className === 'GridItemOdd' ? '#f5d6c6' : '#fff'};
+  border: 5px solid ${(props) => props.className === 'GridItemOdd' ? '#eee' : '#f5d6c6'};
+  visibility: ${(props) => {
+    return props.className === (props.inverted ? 'GridItemEven' : 'GridItemOdd') ? 'hidden' : 'visible'
+  }};
+`
+
+const InputFancy = styled.input`
+  padding: 0.25rem 0.5rem;
+  border-radius: 10rem;
+  text-align: center;
+  font-size: 22px;
+`
+
+const HrFancy = styled.hr`
+  border: 1px solid #615550;
+`
+
+const RowDiv = styled.div`
+  font-size: 22px;
   border-radius: 25rem;
+  background-color: ${(props) => props.className === 'ListItemEven' ? '#f5d6c6' : '#fff'};
 `
 
 const Display = (props) => {
   const [data, setData] = useState([]);
-  // const [loading, setLoading] = useState(true);
-  // const [keyword, setKeyword] = useState('want');
-  // const [geo, setGeo] = useState('US-CA-800');
-  // let fetchObj = {
-  //   method: 'POST', // *GET, POST, PUT, DELETE, etc.
-  //   cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-  //   credentials: 'same-origin', // include, *same-origin, omit
-  //   headers: {
-  //       'Content-Type': 'application/json',
-  //       // 'Content-Type': 'application/x-www-form-urlencoded',
-  //   },
-  //   body: JSON.stringify({
-  //     keyword: textValue,
-  //     // geo: geo,
-  //   }), // body data type must match "Content-Type" header
-  // }
-  
+
   function fetchUrl(value) {
     fetch('/db', {
       method: 'POST', // *GET, POST, PUT, DELETE, etc.
@@ -40,22 +57,15 @@ const Display = (props) => {
       credentials: 'same-origin', // include, *same-origin, omit
       headers: {
           'Content-Type': 'application/json',
-          // 'Content-Type': 'application/x-www-form-urlencoded',
       },
       body: JSON.stringify({
         keyword: value,
-        // geo: geo,
-      }), // body data type must match "Content-Type" header
+      }),
     })
     .then(response => response.json())
     .then(response => {
-      // console.log('hi', response);
-      // if (JSON.parse(response).keyword) setData(JSON.parse(response).keyword)
-      // console.log(response);
       setData(JSON.parse(JSON.parse(response).keyword));
-      // setLoading(false);
-      // dataArr = Array.from(data);
-      return 
+      return;
     })
     .catch(err => {
       console.log(err);
@@ -63,44 +73,43 @@ const Display = (props) => {
   }
   const addS = (input) => {return input + 's'};
 
-  
   const [textCallback, textValue] = useEventCallback(
     event$ => event$.pipe(
-      throttleTime(600),
+      throttleTime(100),
       pluck('target', 'value'),
-      map(value => {console.log(value); return value}),
+      map(value => {return value}),
       map(value => {if(value.length > 1) fetchUrl(value); return value})), 'type away friend!');
-  // const observable = interval(6000);
   
-  // useEffect(() => {
-  //   // setData('Hello World')
-  //   fetchUrl();
-  // }, []);
   const Entries = [];
   for(let i = 0; i < data.length; i += 1) {
     Entries.push(data[i])
   }
 
   const Row = ({ index, style }) => (
-    <div className={index % 2 ? "ListItemOdd" : "ListItemEven"} style={style}>
+    <RowDiv className={index % 2 ? "ListItemOdd" : "ListItemEven"} style={style}>
       {Entries[index]}
-    </div>
+    </RowDiv>
   );
-  // const Entries = data.map((e, i) => (<Entry key={i + 'entry'} datum={e}/>))
+  
   return (
-    <DisplayDiv>
-      <h2>{textValue}</h2>
-        <input type="text" name="name" onChangeCapture={textCallback}/>
+    <DisplayDiv shadow={props.shadow} className={props.label} inverted={props.inverted}>
+      <h2>*{textValue}*</h2>
+        <InputFancy 
+          type="text" 
+          name="name"
+          placeholder="word association!"
+          onChangeCapture={textCallback}
+        />
+        <HrFancy/>
         <List
           height={150}
-          itemCount={12}
+          itemCount={props.rows}
           itemSize={35}
-          width={300}
+          width={window.outerWidth / 3.01}
           >
           {Row}
         </List>
-        {/* {loading &&
-        <p>Loading...</p>} */}
+        <p>showing <strong>{String(props.rows)}</strong> items</p>
     </DisplayDiv>
   )
 }

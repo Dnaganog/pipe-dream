@@ -10,7 +10,7 @@ module.exports = {
   },
   devServer: {
     publicPath: '/build',
-    proxy: {'/db': 'http://localhost:3000'},
+    proxy: { '/db': 'http://localhost:3000' },
     port: 8080,
   },
   module: {
@@ -19,7 +19,10 @@ module.exports = {
         test: /\.jsx?$/,
         exclude: /(node_modules)/,
         loader: 'babel-loader',
-        options: { presets: ['@babel/preset-env', '@babel/preset-react'] },
+        options: {
+          presets: ['@babel/preset-env', '@babel/preset-react'],
+          plugins: ['babel-plugin-styled-components'],
+        },
       },
     ],
   },

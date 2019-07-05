@@ -7,12 +7,25 @@ const GridSection = styled.section`
   grid-template-columns: 1fr 1fr 1fr;
 `
 
-const Grid = () => {
+const Grid = (props) => {
   const displays = [];
-  for (let i = 0; i < 9; i += 1) {
-    displays.push(<Display key={i + 'Display'}/>)
+  let i = 0;
+  let shadowValue = 'middle';
+  while (i < 36) {
+    if(i % 3 === 0) shadowValue = 'left';
+    if(i % 3 === 1) shadowValue = 'middle';
+    if(i % 3 === 2) shadowValue = 'right';
+    displays.push(
+    <Display 
+      label={i % 2 ? "GridItemOdd" : "GridItemEven"} 
+      shadow={shadowValue}
+      rows={props.rows}
+      inverted={props.inverted}
+      key={i + 'Display'}
+    />
+    )
+      i += 1;
   }
-  console.log(displays);
   return (
     <GridSection>
       {displays}
